@@ -1,17 +1,22 @@
 import React, {useState} from 'react';
 import './App.css';
 import Todolist, {TasksType} from "./components/Todolist";
+import {v1} from "uuid";
 
 export type FilterValuesType = "all" | "completed" | "active";
 
 function App() {
 
     let [tasks, setTasks] = useState<Array<TasksType>>([
-        {id: 1, title: "CSS", isDone: true},
-        {id: 2, title: "JS", isDone: true},
-        {id: 3, title: "React", isDone: false},
-        {id: 4, title: "Redux", isDone: false},
+        {id: v1(), title: "CSS", isDone: true},
+        {id: v1(), title: "JS", isDone: true},
+        {id: v1(), title: "React", isDone: false},
+        {id: v1(), title: "Redux", isDone: false},
+        {id: v1(), title: "GQL", isDone: false},
+
     ]);
+    console.log(tasks);
+
     let [filter, setFilter] = useState<FilterValuesType>("all");
 
     /*   let tasks2: Array<TasksType> = [
@@ -33,7 +38,13 @@ function App() {
             console.log(resultTasks) // выведи в консоль результат
         }*/
 
-    function removeTask(id: number) {// аналогичная запись 27-37 строк
+    function addTask(title: string) {
+        let newTask = { id: v1(), title: title, isDone: false}
+        let newTasks = [newTask, ...tasks]
+        setTasks(newTasks);
+    }
+
+    function removeTask(id: string) {// аналогичная запись 27-37 строк
         let filteredTasks = tasks.filter(t => t.id !== id) // пропусти таски id которых не равны пришедшим из колбэка для удаления
         setTasks(filteredTasks);
     }
@@ -54,7 +65,8 @@ function App() {
             <Todolist title="what to learn"
                       tasks={tasksForTodolist}
                       removeTask={removeTask}
-                      ChangeFilter={ChangeFilter}/>
+                      ChangeFilter={ChangeFilter}
+                      addTask={addTask}/>
             {/*<Todolist title="movies" tasks={tasks2}/>
             <Todolist title="songs" tasks={tasks3}/>*/}
 
