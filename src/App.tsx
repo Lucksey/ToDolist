@@ -15,42 +15,27 @@ function App() {
         {id: v1(), title: "GQL", isDone: false},
 
     ]);
-    console.log(tasks);
-
     let [filter, setFilter] = useState<FilterValuesType>("all");
-
-    /*   let tasks2: Array<TasksType> = [
-           { id: 1, title: "Gentlemens", isDone: true},
-           { id: 2, title: "Martix", isDone: true},
-           { id: 3, title: "XXX", isDone: false},
-       ]
-   */
-
-    /*    function removeTask(id: number) {
-
-            let resultTasks = tasks.filter((t) => {
-                if (t.id != id) {
-                    return true; // если id из t (пришедший из колбэка) не равен id из tasks (state) верни тру/фолс
-                } else {
-                    return false;
-                }
-            })
-            console.log(resultTasks) // выведи в консоль результат
-        }*/
 
     function addTask(title: string) {
         let newTask = { id: v1(), title: title, isDone: false}
         let newTasks = [newTask, ...tasks]
         setTasks(newTasks);
     }
-
     function removeTask(id: string) {// аналогичная запись 27-37 строк
         let filteredTasks = tasks.filter(t => t.id !== id) // пропусти таски id которых не равны пришедшим из колбэка для удаления
         setTasks(filteredTasks);
     }
-
     function ChangeFilter (value: FilterValuesType) {
         setFilter(value)
+    }
+    function ChangeCheckboxStatus(taskId: string, isDone: boolean) {
+        let task = tasks.find (t => t.id === taskId) // найти в массиве tasks(стейт) taskId(пришедший из колбэка) и присвоить  это значение task'e
+        if (task) { //если есть таска
+            task.isDone = isDone
+        }
+        setTasks([...tasks])
+
     }
 
     let tasksForTodolist = tasks;
@@ -66,10 +51,9 @@ function App() {
                       tasks={tasksForTodolist}
                       removeTask={removeTask}
                       ChangeFilter={ChangeFilter}
-                      addTask={addTask}/>
-            {/*<Todolist title="movies" tasks={tasks2}/>
-            <Todolist title="songs" tasks={tasks3}/>*/}
-
+                      addTask={addTask}
+                      ChangeStatus={ChangeCheckboxStatus}
+                      filter={filter}/>
         </div>
     );
 }
