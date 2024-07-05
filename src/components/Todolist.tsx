@@ -8,14 +8,17 @@ export type TasksType = {
 }
 
 type TodolistPropsType = {
+    id: string
     title: string
     tasks: Array<TasksType>
     // tasks: TasksType[] - вариант записи
-    removeTask: (id: string) => void
-    ChangeFilter: (value: FilterValuesType) => void
-    addTask: (title: string) => void
-    ChangeStatus: (id: string, isDone: boolean) => void
+    removeTask: (id: string, todolistId: string) => void
+    ChangeFilter: (value: FilterValuesType, todolist: string) => void
+    addTask: (title: string, todolistId: string) => void
+    ChangeStatus: (id: string, isDone: boolean, todolistId: string) => void
     filter: FilterValuesType
+    deleteTodoList: (todolistId: string) => void
+
 }
 
 export function Todolist(props: TodolistPropsType) {
@@ -31,7 +34,7 @@ export function Todolist(props: TodolistPropsType) {
     const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.ctrlKey && e.charCode === 13 && newTaskTitle.trim() !== "") {
             // если нажата Ctrl + Enter(код13) + после обрезания пробелов строка не равна пустой строке
-            props.addTask(newTaskTitle.trim()) // вызвать addTask и передать парамметром newTaskTitle без пробелов
+            props.addTask(newTaskTitle.trim(), props.id) // вызвать addTask и передать парамметром newTaskTitle без пробелов
             setNewTaskTitle(""); // занулить строку (очистить поле ввода)
         } else {
             setError("Title is required") // передать в локальный стейт сообщение об ошибке
@@ -39,20 +42,24 @@ export function Todolist(props: TodolistPropsType) {
     }
     const onButtonPressHandler = () => {
         if (newTaskTitle.trim() !== "") { // если содержимое без пробелов не равно пустой строке
-            props.addTask(newTaskTitle.trim()); // передать value без пробелов
+            props.addTask(newTaskTitle.trim(), props.id); // передать value без пробелов
             setNewTaskTitle(""); // занулить строку ввода
         } else { // в ином случае
             setError("Title is required") // передать в локальный стейт сообщение об ошибке
         }
     }
-    const onAllClickHandler = () => props.ChangeFilter("all");
-    const onActiveClickHandler = () => props.ChangeFilter("active");
-    const onCompletedClickHandler = () => props.ChangeFilter("completed");
-
+    const onAllClickHandler = () => props.ChangeFilter("all", props.id);
+    const onActiveClickHandler = () => props.ChangeFilter("active", props.id);
+    const onCompletedClickHandler = () => props.ChangeFilter("completed", props.id);
+    const deleteTodoList = () => {
+        props.deleteTodoList(props.id)
+    }
 
     return (
         <div>
-            <h3>{props.title}</h3>
+            <h3>{props.title}
+                <button onClick={deleteTodoList}>x</button>
+            </h3>
             <div>
                 <input onChange={onNewTitleChangeHandler}
                        value={newTaskTitle}
@@ -65,19 +72,19 @@ export function Todolist(props: TodolistPropsType) {
                 {
                     props.tasks.map(t => {
                         const onRemoveHandler = () => {
-                            props.removeTask(t.id)
+                            props.removeTask(t.id, props.id)
                         }
                         const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-                            props.ChangeStatus(t.id, e.currentTarget.checked);
+                            props.ChangeStatus(t.id, e.currentTarget.checked, props.id);
                         }
 
                         return (
-                            <li key={t.id} className={t.isDone ? "is-done" : ""}>
-                                {/*применили условие для стилей ко всей ЛИшке*/}
+                            <li key={t.id}>
                                 <input type="checkbox"
                                        checked={t.isDone}
                                        onChange={onChangeHandler}/>
-                                <span>{t.title}</span>
+                                <span className={t.isDone ? "is-done" : ""}>{t.title}</span>
+                                {/*   применили стили для текста с условием что чекбокс тру*/}
                                 <button onClick={onRemoveHandler}>x</button>
                             </li>
                         )
