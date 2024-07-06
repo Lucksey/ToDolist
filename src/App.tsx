@@ -3,12 +3,16 @@ import './App.css';
 import Todolist, {TasksType} from "./components/Todolist";
 import {v1} from "uuid";
 import todolist from "./components/Todolist";
+import AddItemForm from "./components/AddItemForm";
 
 export type FilterValuesType = "all" | "completed" | "active";
 type TodolistsType = {
     id: string
     title: string
     filter: FilterValuesType
+}
+type TasksStateType = {
+    [key: string]: Array<TasksType>
 }
 
 function App() {
@@ -18,12 +22,11 @@ function App() {
     let todolistId3 = v1();
 
     let [todolists, setTodolists] = useState<Array<TodolistsType>>([
-        {id: todolistId1, title: "What to learn", filter: "active"},
-        {id: todolistId2, title: "Аchievements", filter: "completed"},
+        {id: todolistId1, title: "What to learn", filter: "all"},
+        {id: todolistId2, title: "Аchievements", filter: "all"},
         {id: todolistId3, title: "AllTasks", filter: "all"},
     ])
-
-    let [tasksObj, setTasks] = useState({
+    let [tasksObj, setTasks] = useState<TasksStateType>({
         [todolistId1]: [
             {id: v1(), title: "CSS", isDone: true},
             {id: v1(), title: "JS", isDone: true},
@@ -43,6 +46,27 @@ function App() {
         ]
     })
 
+    function addTodolist(title: string) {
+        let todolist: TodolistsType = {
+            id: v1(), title: title, filter: "all"
+        };
+
+        setTodolists([todolist, ...todolists]);
+        setTasks({
+            ...tasksObj,
+            [todolist.id]: []
+        })
+    }
+
+    function ChangeTodolistTitle(id: string, newTitle: string) {
+        let todolist = todolists.find(tl => tl.id === id)
+
+        if (todolist) {
+            todolist.title = newTitle
+
+            setTodolists([...todolists]);
+        }
+    }
 
     function addTask(title: string, todolistId: string) {
         let newTask = {id: v1(), title: title, isDone: false};
@@ -81,26 +105,32 @@ function App() {
         }
     }
 
+    function ChangeTaskTitle(taskId: string, newTitle: string, todolistId: string) {
+        let tasks = tasksObj[todolistId];// достать из таскОбж тот тудулистИд (массив) который придет в пропсах
+        let task = tasks.find(t => t.id === taskId)
+        // найти в массиве tasks(стейт) taskId(пришедший из колбэка) и присвоить  это значение task'e
+        if (task) { //если таска нашлась
+            task.title = newTitle
+            //tasksObj[todolistId] = tasks;
+            setTasks({...tasksObj});
+        }
+    }
+
     function deleteTodoList(todolistId: string) {
         let filteredTodolists = todolists.filter(tl => tl.id !== todolistId);
         // пропусти все тудулисты кроме того который пришел в пропсах
         setTodolists(filteredTodolists); //эта строка перерисовывает UI. Сетаем отсортированые тудулисты в стейт
         //setTodolists([...filteredTodolists]); // ?????????????????????????????????????? и то и то работает
         delete tasksObj[todolistId]; // удалить тудулист с массивом тасок (id в пропсах пришло)
-       // setTasks({...tasksObj}); // эта строка перерисовывает UI, она НЕобязательна.
+        // setTasks({...tasksObj}); // эта строка перерисовывает UI, она НЕобязательна.
         // Мы просто отчиститли стейт от тасок удаленного тудулиста
 
     }
 
-    /* let tasksForTodolist = tasks;
-     if (filter === "completed") {
-         tasksForTodolist = tasks.filter(t => t.isDone === true);
-     } if (filter === "active") {
-         tasksForTodolist = tasks.filter(t => t.isDone === false);
-     }*/
-
+    let placeholderItemForm = "Enter name new todoList";
     return (
         <div className="App">
+            <AddItemForm  placeholder={placeholderItemForm} addItem={addTodolist}/>
             {todolists.map((tl) => {
                 let tasksForTodolist = tasksObj[tl.id];
                 if (tl.filter === "completed") {
@@ -109,6 +139,7 @@ function App() {
                 if (tl.filter === "active") {
                     tasksForTodolist = tasksForTodolist.filter(t => t.isDone === false);
                 }
+                let placeholderTodolistForm = "Enter name new task";
                 return <Todolist
                     key={tl.id}
                     id={tl.id}
@@ -117,9 +148,12 @@ function App() {
                     removeTask={removeTask}
                     ChangeFilter={ChangeFilter}
                     addTask={addTask}
-                    ChangeStatus={ChangeCheckboxStatus}
+                    ChangeTaskStatus={ChangeCheckboxStatus}
                     filter={tl.filter}
                     deleteTodoList={deleteTodoList}
+                    ChangeTaksTitle={ChangeTaskTitle}
+                    ChangeTodolistTitle={ChangeTodolistTitle}
+                    placeholder={placeholderTodolistForm}
                 />
             })}
 
