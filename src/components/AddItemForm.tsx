@@ -1,4 +1,7 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from "react";
+import TextField from '@mui/material/TextField';
+import IconButton from "@mui/material/IconButton";
+import {ControlPoint} from "@mui/icons-material";
 
 
 type AddItemFormPropsType = {
@@ -6,7 +9,7 @@ type AddItemFormPropsType = {
     placeholder: string
 }
 
-export function AddItemForm( props: AddItemFormPropsType) {
+export function AddItemForm(props: AddItemFormPropsType) {
 
     const [newTaskTitle, setNewTaskTitle] = useState("");
     const [error, setError] = useState<null | string>(null);
@@ -22,7 +25,7 @@ export function AddItemForm( props: AddItemFormPropsType) {
             props.addItem(newTaskTitle.trim()) // вызвать addTask и передать парамметром newTaskTitle без пробелов
             setNewTaskTitle(""); // занулить строку (очистить поле ввода)
         } else {
-            setError("Title is required") // передать в локальный стейт сообщение об ошибке
+            setError("ERROR") // передать в локальный стейт сообщение об ошибке
         }
     }
     const onButtonPressHandler = () => {
@@ -30,20 +33,33 @@ export function AddItemForm( props: AddItemFormPropsType) {
             props.addItem(newTaskTitle.trim()); // передать value без пробелов
             setNewTaskTitle(""); // занулить строку ввода
         } else { // в ином случае
-            setError("Title is required") // передать в локальный стейт сообщение об ошибке
+            setError("ERROR") // передать в локальный стейт сообщение об ошибке
         }
     }
 
     return <div>
-        <input onChange={onNewTitleChangeHandler}
-               value={newTaskTitle}
-               onKeyPress={onKeyPressHandler} //атрибут помечен как устаревший
-               className={error ? "error" : ""}
-               placeholder={props.placeholder}
+
+        <TextField
+            error={!!error}
+            variant="standard"
+            id="outlined-basic"
+            onChange={onNewTitleChangeHandler}
+            value={newTaskTitle}
+            onKeyPress={onKeyPressHandler} //атрибут помечен как устаревший
+            //className={error ? "error" : ""}
+            label={error ? "Error" : props.placeholder}
+            helperText={error ? "Title is required" : ""}
         />
-        <button onClick={onButtonPressHandler}>+</button>
-        {error && <div className="error-message">{error}</div>}
+        <IconButton aria-label="delete" size="small" color={'info'}>
+            <ControlPoint onClick={onButtonPressHandler}
+                          color={'primary'}
+                          fontSize={"large"}
+            />
+        </IconButton>
+
+        {/*{error && <div className="error-message">{error}</div>}*/}
     </div>
 
 }
+
 export default AddItemForm;

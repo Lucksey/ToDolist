@@ -2,6 +2,10 @@ import React, {ChangeEvent} from "react";
 import {FilterValuesType} from "../App";
 import AddItemForm from "./AddItemForm";
 import {EditableSpan} from "./EditableSpan";
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Button from '@mui/material/Button';
+import Checkbox from '@mui/material/Checkbox';
 
 export type TasksType = {
     id: string,
@@ -41,11 +45,15 @@ export function Todolist(props: TodolistPropsType) {
     return (
         <div>
             <h3><EditableSpan title={props.title} onChange={ChangeTodolistTitle}/>
-                <button onClick={deleteTodoList}>x</button>
+                {/*<button onClick={deleteTodoList}>x</button>*/}
+                <IconButton aria-label="delete" size="small" color={'info'}>
+                    <DeleteIcon fontSize="small" onClick={deleteTodoList}/>
+                </IconButton>
+
             </h3>
             <AddItemForm addItem={addTask}
                          placeholder={props.placeholder}
-                         />
+            />
             <ul>
                 {
                     props.tasks.map(t => {
@@ -60,15 +68,20 @@ export function Todolist(props: TodolistPropsType) {
                         }
 
                         return (
-                            <li key={t.id} className={t.isDone ? "is-done" : ""} >
+                            <li key={t.id} className={t.isDone ? "is-done" : ""}>
                                 {/*   применили стили для всей ЛИшки с условием что чекбокс тру*/}
-                                <input type="checkbox"
-                                       checked={t.isDone}
-                                       onChange={onChangeStatusHandler}/>
+                                <Checkbox
+                                    checked={t.isDone}
+                                    onChange={onChangeStatusHandler}/>
                                 <EditableSpan title={t.title}
                                               onChange={onChangeTitleHandler}/>
 
-                                <button onClick={onRemoveHandler}>x</button>
+                                {/*<button onClick={onRemoveHandler}>x</button>*/}
+                                {/*<DeleteForeverIcon onClick={onRemoveHandler}/>*/}
+                                <IconButton aria-label="delete" size="small" color={"info"}>
+                                    <DeleteIcon fontSize="small" onClick={onRemoveHandler}/>
+                                </IconButton>
+
                             </li>
                         )
                     })
@@ -76,7 +89,22 @@ export function Todolist(props: TodolistPropsType) {
 
             </ul>
             <div>
-                <button className={props.filter === "all" ? "active-filter" : ""}
+                <Button variant={props.filter === "all" ? "contained" : "outlined"}
+                        size="small"
+                        onClick={onAllClickHandler}>
+                    All
+                </Button>
+                <Button variant={props.filter === "active" ? "contained" : "outlined"}
+                        size="small"
+                        onClick={onActiveClickHandler}>
+                    Active
+                </Button>
+                <Button variant={props.filter === "completed" ? "contained" : "outlined"}
+                        size="small"
+                        onClick={onCompletedClickHandler}>
+                    Completed
+                </Button>
+                {/*<button className={props.filter === "all" ? "active-filter" : ""}
                         onClick={onAllClickHandler}>All
                 </button>
                 <button className={props.filter === "active" ? "active-filter" : ""}
@@ -84,7 +112,8 @@ export function Todolist(props: TodolistPropsType) {
                 </button>
                 <button className={props.filter === "completed" ? "active-filter" : ""}
                         onClick={onCompletedClickHandler}>Completed
-                </button>
+                </button>*/}
+
             </div>
         </div>
     )

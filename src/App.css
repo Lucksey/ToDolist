@@ -1,30 +1,31 @@
+/*
 .App {
   display: flex;
   padding: 20px;
-  /*border:palegreen, solid, 1px;*/
+  !*border:palegreen, solid, 1px;*!
 }
 
 .App > div {
   margin: 20px;
-  /*border: mediumvioletred, solid, 1px;*/
+  !*border: mediumvioletred, solid, 1px;*!
 }
 
 .App h3 {
   text-align: center;
 }
 
-.error {
+!*.error {
   border: red, 1px, solid;
-}
+}*!
 
 .error-message {
   color: red;
 }
 
-.active-filter {
-  background-color: mediumaquamarine;
-}
+!*.active-filter {
+  background-color: #1975d1;
+}*!
 
 .is-done {
   opacity: 0.5;
-}
+}*/

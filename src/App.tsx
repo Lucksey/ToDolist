@@ -2,8 +2,10 @@ import React, {useState} from 'react';
 import './App.css';
 import Todolist, {TasksType} from "./components/Todolist";
 import {v1} from "uuid";
-import todolist from "./components/Todolist";
 import AddItemForm from "./components/AddItemForm";
+import {AppBar, Container, Grid, Paper, Toolbar, Typography} from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import {Menu} from "@mui/icons-material";
 
 export type FilterValuesType = "all" | "completed" | "active";
 type TodolistsType = {
@@ -127,38 +129,58 @@ function App() {
 
     }
 
-    let placeholderItemForm = "Enter name new todoList";
+    let placeholderItemForm = "Enter name new todolist";
     return (
         <div className="App">
-            <AddItemForm  placeholder={placeholderItemForm} addItem={addTodolist}/>
-            {todolists.map((tl) => {
-                let tasksForTodolist = tasksObj[tl.id];
-                if (tl.filter === "completed") {
-                    tasksForTodolist = tasksForTodolist.filter(t => t.isDone === true);
-                }
-                if (tl.filter === "active") {
-                    tasksForTodolist = tasksForTodolist.filter(t => t.isDone === false);
-                }
-                let placeholderTodolistForm = "Enter name new task";
-                return <Todolist
-                    key={tl.id}
-                    id={tl.id}
-                    title={tl.title}
-                    tasks={tasksForTodolist}
-                    removeTask={removeTask}
-                    ChangeFilter={ChangeFilter}
-                    addTask={addTask}
-                    ChangeTaskStatus={ChangeCheckboxStatus}
-                    filter={tl.filter}
-                    deleteTodoList={deleteTodoList}
-                    ChangeTaksTitle={ChangeTaskTitle}
-                    ChangeTodolistTitle={ChangeTodolistTitle}
-                    placeholder={placeholderTodolistForm}
-                />
-            })}
-
+            <AppBar position="static">
+                <Toolbar>
+                    <IconButton edge="start" color="inherit" aria-label="menu" sx={{mr: 2}}>
+                        <Menu/>
+                    </IconButton>
+                    <Typography variant="h6" color="inherit" component="div">
+                        Photos
+                    </Typography>
+                </Toolbar>
+            </AppBar>
+            <Container fixed>
+                <Grid container>
+                    <AddItemForm placeholder={placeholderItemForm} addItem={addTodolist}/>
+                </Grid>
+                <Grid container spacing={6} style={{padding: "10px"}}>
+                    {todolists.map((tl) => {
+                        let tasksForTodolist = tasksObj[tl.id];
+                        if (tl.filter === "completed") {
+                            tasksForTodolist = tasksForTodolist.filter(t => t.isDone === true);
+                        }
+                        if (tl.filter === "active") {
+                            tasksForTodolist = tasksForTodolist.filter(t => t.isDone === false);
+                        }
+                        let placeholderTodolistForm = "Enter name new task";
+                        return <Grid item>
+                            <Paper style={{padding: "10px" }}>
+                            <Todolist
+                                key={tl.id}
+                                id={tl.id}
+                                title={tl.title}
+                                tasks={tasksForTodolist}
+                                removeTask={removeTask}
+                                ChangeFilter={ChangeFilter}
+                                addTask={addTask}
+                                ChangeTaskStatus={ChangeCheckboxStatus}
+                                filter={tl.filter}
+                                deleteTodoList={deleteTodoList}
+                                ChangeTaksTitle={ChangeTaskTitle}
+                                ChangeTodolistTitle={ChangeTodolistTitle}
+                                placeholder={placeholderTodolistForm}
+                            />
+                            </Paper>
+                        </Grid>
+                    })}
+                </Grid>
+            </Container>
         </div>
-    );
+)
+;
 }
 
 export default App;
