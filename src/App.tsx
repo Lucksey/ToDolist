@@ -8,12 +8,12 @@ import IconButton from "@mui/material/IconButton";
 import {Menu} from "@mui/icons-material";
 
 export type FilterValuesType = "all" | "completed" | "active";
-type TodolistsType = {
+export type TodolistType = {
     id: string
     title: string
     filter: FilterValuesType
 }
-type TasksStateType = {
+export type TasksStateType = {
     [key: string]: Array<TasksType>
 }
 
@@ -23,11 +23,12 @@ function App() {
     let todolistId2 = v1();
     let todolistId3 = v1();
 
-    let [todolists, setTodolists] = useState<Array<TodolistsType>>([
+    let [todolists, setTodolists] = useState<Array<TodolistType>>([
         {id: todolistId1, title: "What to learn", filter: "all"},
         {id: todolistId2, title: "Аchievements", filter: "all"},
         {id: todolistId3, title: "AllTasks", filter: "all"},
     ])
+
     let [tasksObj, setTasks] = useState<TasksStateType>({
         [todolistId1]: [
             {id: v1(), title: "CSS", isDone: true},
@@ -49,7 +50,7 @@ function App() {
     })
 
     function addTodolist(title: string) {
-        let todolist: TodolistsType = {
+        let todolist: TodolistType = {
             id: v1(), title: title, filter: "all"
         };
 
@@ -58,6 +59,17 @@ function App() {
             ...tasksObj,
             [todolist.id]: []
         })
+    }
+
+    function deleteTodoList(todolistId: string) {
+        let filteredTodolists = todolists.filter(tl => tl.id !== todolistId);
+        // пропусти все тудулисты кроме того который пришел в пропсах
+        setTodolists(filteredTodolists); //эта строка перерисовывает UI. Сетаем отсортированые тудулисты в стейт
+        //setTodolists([...filteredTodolists]); // ?????????????????????????????????????? и то и то работает
+        delete tasksObj[todolistId]; // удалить тудулист с массивом тасок (id в пропсах пришло)
+        // setTasks({...tasksObj}); // эта строка перерисовывает UI, она НЕобязательна.
+        // Мы просто отчиститли стейт от тасок удаленного тудулиста
+
     }
 
     function ChangeTodolistTitle(id: string, newTitle: string) {
@@ -118,16 +130,6 @@ function App() {
         }
     }
 
-    function deleteTodoList(todolistId: string) {
-        let filteredTodolists = todolists.filter(tl => tl.id !== todolistId);
-        // пропусти все тудулисты кроме того который пришел в пропсах
-        setTodolists(filteredTodolists); //эта строка перерисовывает UI. Сетаем отсортированые тудулисты в стейт
-        //setTodolists([...filteredTodolists]); // ?????????????????????????????????????? и то и то работает
-        delete tasksObj[todolistId]; // удалить тудулист с массивом тасок (id в пропсах пришло)
-        // setTasks({...tasksObj}); // эта строка перерисовывает UI, она НЕобязательна.
-        // Мы просто отчиститли стейт от тасок удаленного тудулиста
-
-    }
 
     let placeholderItemForm = "Enter name new todolist";
     return (
@@ -138,7 +140,7 @@ function App() {
                         <Menu/>
                     </IconButton>
                     <Typography variant="h6" color="inherit" component="div">
-                        Photos
+                        Todolist
                     </Typography>
                 </Toolbar>
             </AppBar>
@@ -157,30 +159,30 @@ function App() {
                         }
                         let placeholderTodolistForm = "Enter name new task";
                         return <Grid item>
-                            <Paper style={{padding: "10px" }}>
-                            <Todolist
-                                key={tl.id}
-                                id={tl.id}
-                                title={tl.title}
-                                tasks={tasksForTodolist}
-                                removeTask={removeTask}
-                                ChangeFilter={ChangeFilter}
-                                addTask={addTask}
-                                ChangeTaskStatus={ChangeCheckboxStatus}
-                                filter={tl.filter}
-                                deleteTodoList={deleteTodoList}
-                                ChangeTaksTitle={ChangeTaskTitle}
-                                ChangeTodolistTitle={ChangeTodolistTitle}
-                                placeholder={placeholderTodolistForm}
-                            />
+                            <Paper style={{padding: "10px"}}>
+                                <Todolist
+                                    key={tl.id}
+                                    id={tl.id}
+                                    title={tl.title}
+                                    tasks={tasksForTodolist}
+                                    removeTask={removeTask}
+                                    ChangeFilter={ChangeFilter}
+                                    addTask={addTask}
+                                    ChangeTaskStatus={ChangeCheckboxStatus}
+                                    filter={tl.filter}
+                                    deleteTodoList={deleteTodoList}
+                                    ChangeTaksTitle={ChangeTaskTitle}
+                                    ChangeTodolistTitle={ChangeTodolistTitle}
+                                    placeholder={placeholderTodolistForm}
+                                />
                             </Paper>
                         </Grid>
                     })}
                 </Grid>
             </Container>
         </div>
-)
-;
+    )
+        ;
 }
 
 export default App;
