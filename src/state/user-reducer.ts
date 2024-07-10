@@ -8,13 +8,7 @@ type ActionType = {
     [key:string]: any
 }
 
-
-
-
 export const userReducer = (state: StateType, action: ActionType): StateType => {
-
-
-
     switch (action.type) {
         case "INC_AGE":
             let newState = {...state};
