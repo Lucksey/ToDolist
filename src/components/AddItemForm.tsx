@@ -45,7 +45,6 @@ export function AddItemForm(props: AddItemFormPropsType) {
             onChange={onNewTitleChangeHandler}
             value={newTaskTitle}
             onKeyPress={onKeyPressHandler} //атрибут помечен как устаревший
-            //className={error ? "error" : ""}
             label={error ? "Error" : props.placeholder}
             helperText={error ? "Title is required" : ""}
         />
@@ -55,8 +54,6 @@ export function AddItemForm(props: AddItemFormPropsType) {
                           fontSize={"large"}
             />
         </IconButton>
-
-        {/*{error && <div className="error-message">{error}</div>}*/}
     </div>
 
 }
