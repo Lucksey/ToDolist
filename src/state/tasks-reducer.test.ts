@@ -1,4 +1,4 @@
-import {addTaskAC, deleteTaskAC, changeTaskStatusAC, tasksReducer, changeTaskTitleAC} from './tasks-reducer';
+import {addTaskAC, removeTaskAC, changeTaskStatusAC, tasksReducer, changeTaskTitleAC} from './tasks-reducer';
 import {TasksStateType} from '../App';
 import {addTodolistAC, removeTodolistAC} from "./todolists-reducer";
 
@@ -16,7 +16,7 @@ test('correct task should be deleted from correct array', () => {
         ]
     };
 
-    const action = deleteTaskAC("todolistId2", "2");
+    const action = removeTaskAC("todolistId2", "2");
     const endState = tasksReducer(startState, action);
 
     expect(endState["todolistId1"].length).toBe(3);

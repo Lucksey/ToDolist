@@ -49,6 +49,8 @@ function App() {
         ]
     })
 
+    let placeholderItemForm = "Enter name new todolist";
+
     function addTodolist(title: string) {
         let todolist: TodolistType = {
             id: v1(), title: title, filter: "all"
@@ -82,7 +84,7 @@ function App() {
         }
     }
 
-    function addTask(title: string, todolistId: string) {
+    function addTask(todolistId: string, title: string) {
         let newTask = {id: v1(), title: title, isDone: false};
         // новая таска - вот такой объека, с такими парамметрами: значениями
         let tasks = tasksObj[todolistId]; // достаем нужный массив
@@ -91,7 +93,7 @@ function App() {
         setTasks({...tasksObj}); // сетаем измененный объект
     }
 
-    function removeTask(id: string, todolistId: string) {
+    function removeTask(todolistId: string, id: string) {
         let tasks = tasksObj[todolistId];// достать из таскОбж тот тудулистИд который придет в пропсах
         let filteredTasks = tasks.filter(t => t.id !== id)
         // пропусти таски id которых не равны пришедшим из колбэка для удаления
@@ -99,16 +101,16 @@ function App() {
         setTasks({...tasksObj}); // не копия массива, а копия объекта{} Сетаем объект для перерисовки реаком
     }
 
-    function ChangeFilter(value: FilterValuesType, todolistId: string) {
+    function ChangeFilter(todolistId: string, filter: FilterValuesType) {
         let todolist = todolists.find(tl => tl.id === todolistId);
         // пробегаемся по всем тудулистам и ищем тот у которого id === todolistId (пришедший в пропсах)
         if (todolist) { // если такой нашелся
-            todolist.filter = value; // тудулист, тебе меняем фильтр на value (пришедший в пропсах)
+            todolist.filter = filter; // тудулист, тебе меняем фильтр на value (пришедший в пропсах)
             setTodolists([...todolists]); //засетать в стейт новый массив (копию массива)
         }
     }
 
-    function ChangeCheckboxStatus(taskId: string, isDone: boolean, todolistId: string) {
+    function ChangeCheckboxStatus(todolistId: string, taskId: string, isDone: boolean) {
         let tasks = tasksObj[todolistId];// достать из таскОбж тот тудулистИд (массив) который придет в пропсах
         let task = tasks.find(t => t.id === taskId)
         // найти в массиве tasks(стейт) taskId(пришедший из колбэка) и присвоить  это значение task'e
@@ -119,7 +121,7 @@ function App() {
         }
     }
 
-    function ChangeTaskTitle(taskId: string, newTitle: string, todolistId: string) {
+    function ChangeTaskTitle(todolistId: string, taskId: string, newTitle: string) {
         let tasks = tasksObj[todolistId];// достать из таскОбж тот тудулистИд (массив) который придет в пропсах
         let task = tasks.find(t => t.id === taskId)
         // найти в массиве tasks(стейт) taskId(пришедший из колбэка) и присвоить  это значение task'e
@@ -130,8 +132,6 @@ function App() {
         }
     }
 
-
-    let placeholderItemForm = "Enter name new todolist";
     return (
         <div className="App">
             <AppBar position="static">
@@ -158,6 +158,7 @@ function App() {
                             tasksForTodolist = tasksForTodolist.filter(t => t.isDone === false);
                         }
                         let placeholderTodolistForm = "Enter name new task";
+
                         return <Grid item>
                             <Paper style={{padding: "10px"}}>
                                 <Todolist
@@ -182,7 +183,6 @@ function App() {
             </Container>
         </div>
     )
-        ;
 }
 
 export default App;
