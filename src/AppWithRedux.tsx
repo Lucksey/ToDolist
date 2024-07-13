@@ -13,6 +13,7 @@ import {
 } from "./state/todolists-reducer";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootState} from "./state/store";
+import {addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC} from "./state/tasks-reducer";
 
 export type FilterValuesType = "all" | "completed" | "active";
 export type TodolistType = {
@@ -33,7 +34,6 @@ function AppWithRedux() {
 
     let todolists = useSelector<AppRootState, Array<TodolistType>>(state => state.todolists);
 
-
     const addTodolist = useCallback((title: string) => {
         dispatch(addTodolistAC(title));
     }, [dispatch]);
@@ -50,7 +50,29 @@ function AppWithRedux() {
         dispatch(changeTodolistFilterAC(todolistId, filter));
     }, [dispatch]);
 
+
+    const addTask = useCallback((todolistId: string, title: string,) => {
+
+        dispatch(addTaskAC(todolistId, title)); // dispatch(action(props))
+    }, [])
+
+    const removeTask = useCallback((todolistId: string, taskId: string) => {
+        dispatch(removeTaskAC(todolistId, taskId));
+    }, [])
+
+    const ChangeTaskStatus = useCallback((todolistId: string, taskId: string, isDone: boolean,) => {
+        dispatch(changeTaskStatusAC(todolistId, taskId, isDone));
+    }, [])
+
+    const ChangeTaskTitle = useCallback((todolistId: string, taskId: string, newTitle: string) => {
+        dispatch(changeTaskTitleAC(todolistId, taskId, newTitle));
+    }, [])
+
+
+
+
     let placeholderItemForm = "Enter name new todolist";
+    let placeholderTodolistForm = "vplaceholderTodolistForm"
     return (
         <div className="App">
             <AppBar position="static">
@@ -80,6 +102,11 @@ function AppWithRedux() {
                                     filter={tl.filter}
                                     removeTodoList={removeTodoList}
                                     ChangeTodolistTitle={ChangeTodolistTitle}
+                                    ChangeTaskTitle={ChangeTaskTitle}
+                                    ChangeTaskStatus={ChangeTaskStatus}
+                                    removeTask={removeTask}
+                                    addTask={addTask}
+                                    placeholder={placeholderTodolistForm}
 
                                 />
                             </Paper>

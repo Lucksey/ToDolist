@@ -23,12 +23,18 @@ type TodolistPropsType = {
     filter: FilterValuesType
     removeTodoList: (todolistId: string) => void
     ChangeTodolistTitle: (id: string, newTitle: string) => void
+    addTask: (title: string, todolistId: string) => void
+    removeTask: (id: string, todolistId: string) => void
+    ChangeTaskStatus: (todolistId: string, id: string, isDone: boolean) => void
+    ChangeTaskTitle: (id: string, value: string, todolistId: string) => void
+    placeholder: string
 }
 
 export const Todolist = React.memo((props: TodolistPropsType) => {
     let tasks = useSelector<AppRootState, Array<TaskType>>(state => state.tasks[props.id]);
     const dispatch = useDispatch();
 
+    const addTask = (title: string) => props.addTask(props.id, title)
     const onAllClickHandler = useCallback(() => props.ChangeFilter(props.id, "all"), [props.ChangeFilter, props.id]);
     const onActiveClickHandler = useCallback(() => props.ChangeFilter(props.id, "active"), [props.ChangeFilter, props.id]);
     const onCompletedClickHandler = useCallback(() => props.ChangeFilter(props.id, "completed"), [props.ChangeFilter, props.id]);
@@ -54,18 +60,18 @@ export const Todolist = React.memo((props: TodolistPropsType) => {
                 </IconButton>
             </h3>
             <AddItemForm placeholder={placeholderTodolistForm}
-                         addItem={useCallback( (title: string) => dispatch(addTaskAC(props.id, title)),[props.id])}/>
+                         addItem={addTask}/>
             <ul>
                 {
                     tasksForTodolist.map(t => {
                         const onRemoveHandler = () => {
-                            dispatch(removeTaskAC(props.id, t.id));
+                            props.removeTask(props.id, t.id)
                         }
                         const onChangeStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
-                            dispatch(changeTaskStatusAC(props.id, t.id, e.currentTarget.checked));
+                            props.ChangeTaskStatus(props.id, t.id, e.currentTarget.checked);
                         }
-                        const onChangeTitleHandler = (newTitle: string) => {
-                            dispatch(changeTaskTitleAC(props.id, t.id, newTitle));
+                        const onChangeTitleHandler = (value: string) => {
+                            props.ChangeTaskTitle(props.id, t.id, value);
                         }
 
                         return (
