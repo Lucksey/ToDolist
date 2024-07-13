@@ -1,4 +1,5 @@
-import {combineReducers,legacy_createStore } from "redux";
+import {combineReducers, legacy_createStore as createStore, applyMiddleware } from "redux";
+import {thunk} from "redux-thunk";
 import {tasksReducer} from "./tasks-reducer";
 import {todolistsReducer} from "./todolists-reducer";
 
@@ -8,8 +9,8 @@ const rootReduser = combineReducers({
 });
 
 export type AppRootState = ReturnType<typeof rootReduser>
-
-export const store = legacy_createStore(rootReduser);
+// @ts-ignore
+export const store = createStore(rootReduser, applyMiddleware(thunk));
 
 // @ts-ignore
 window.store = store;
