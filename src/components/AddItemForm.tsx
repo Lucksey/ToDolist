@@ -9,16 +9,18 @@ type AddItemFormPropsType = {
     placeholder: string
 }
 
-export function AddItemForm(props: AddItemFormPropsType) {
-
+export const AddItemForm = React.memo((props: AddItemFormPropsType) => {
     const [newTaskTitle, setNewTaskTitle] = useState("");
     const [error, setError] = useState<null | string>(null);
 
     const onNewTitleChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        setError(null);
+        if (error !== null) {
+            setError(null);
+        }
         setNewTaskTitle(e.currentTarget.value);
     }
     const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
+
         if (e.ctrlKey && e.charCode === 13 && newTaskTitle.trim() !== "") {
             // если нажата Ctrl + Enter(код13) + после обрезания пробелов строка не равна пустой строке
             props.addItem(newTaskTitle.trim()) // вызвать addTask и передать парамметром newTaskTitle без пробелов
@@ -56,6 +58,6 @@ export function AddItemForm(props: AddItemFormPropsType) {
         </IconButton>
     </div>
 
-}
+});
 
 export default AddItemForm;

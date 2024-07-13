@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import './App.css';
-import Todolist, {TasksType} from "./components/Todolist";
+import Todolist, {TaskType} from "./components/Todolist";
 import AddItemForm from "./components/AddItemForm";
 import {AppBar, Container, Grid, Paper, Toolbar, Typography} from "@mui/material";
 import IconButton from "@mui/material/IconButton";
@@ -21,7 +21,7 @@ export type TodolistType = {
     filter: FilterValuesType
 }
 export type TasksStateType = {
-    [key: string]: Array<TasksType>
+    [key: string]: Array<TaskType>
 }
 
 function AppWithRedux() {
@@ -29,22 +29,21 @@ function AppWithRedux() {
     let todolists = useSelector<AppRootState, Array<TodolistType>>(state => state.todolists);
     let dispatch = useDispatch();
 
-    function addTodolist(title: string) {
+    const addTodolist = useCallback((title: string) => {
         dispatch(addTodolistAC(title));
+    }, [dispatch]);
 
-    }
-
-    function removeTodoList(todolistId: string) {
+    const removeTodoList = useCallback((todolistId: string) => {
         dispatch(removeTodolistAC(todolistId));
-    }
+    }, [dispatch]);
 
-    function ChangeTodolistTitle(id: string, newTitle: string) {
+    const ChangeTodolistTitle = useCallback((id: string, newTitle: string) => {
         dispatch(changeTodolistTitleAC(id, newTitle));
-    }
+    }, [dispatch]);
 
-    function ChangeFilter(todolistId: string, filter: FilterValuesType) {
+    const ChangeFilter = useCallback((todolistId: string, filter: FilterValuesType) => {
         dispatch(changeTodolistFilterAC(todolistId, filter));
-    }
+    }, [dispatch]);
 
     let placeholderItemForm = "Enter name new todolist";
     return (
